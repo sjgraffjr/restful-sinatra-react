@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Todos from './Todos.js';
 import CreateTodo from './CreateTodo.js';
-import Edit from './Edit.js'
+
 const todoAPI = 'http://localhost:9292/todos';
 
 class App extends Component {
@@ -51,8 +51,35 @@ class App extends Component {
 
     
   }
+  editTodo(e){
+    this.state.todos.forEach((todo)=>{
+      if(todo.task == e.target.defaultValue){
+         todo.task = e.target.value
+          this.setState(this.state)
+      }
+    })
+   
+  }
 
- 
+  saveTodo(todo){ 
+  //form data is data sending to the server(usually it's json)
+  //box for formData
+    let formData = new FormData();
+  //this is putting data into the box
+    formData.set('task', todo.task);
+  //sending data through http request to server
+    fetch(`${todoAPI}/${todo.id}`,{
+      method: "PUT",
+      body: formData
+    })
+    //every time you do this.setState() react knows to do the render function
+    //null=stop displaying the edit form        
+    this.setState({editingTodo: null})
+  }
+
+  editClicked(todo){
+    this.setState({editingTodo: todo})
+  }
 
   render() {
     return (
@@ -62,12 +89,14 @@ class App extends Component {
             <ul>
              <Todos 
               remove={this.deleteItem.bind(this)}
-              todos={this.state.todos} />
+              todos={this.state.todos} 
+              edit={this.editTodo.bind(this)}
+              editingTodo={this.state.editingTodo}
+              editClicked={this.editClicked.bind(this)}
+              save={this.saveTodo.bind(this)}/>
             </ul>
             
-            <CreateTodo createTodo={this.createTodo.bind(this)}/>
-        
-
+            <CreateTodo createTodo={this.createTodo.bind(this)} />
       </div>
     );
   }

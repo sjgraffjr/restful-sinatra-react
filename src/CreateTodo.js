@@ -13,13 +13,11 @@ class CreateTodo extends Component{
 		this.setState({task:''})
 	}
 
-	taskChange=(e)=>{
+	taskChange(e){
 		this.setState({task:e.target.value})
 	}
 
 	render(){
-			  
-	
 		return(
 		 <form onSubmit={this.onSubmit.bind(this)}>
               <input 
